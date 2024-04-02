@@ -19,15 +19,8 @@ public class SeasonList extends ArrayList<Season> {
 
     @Override
     public String toString() {
-        String toString = "";
-
-        for (Season season: this) {
-            toString = toString + "Season " + season.season() + "\n";
-            for (Episode e : season.episodes()) {
-                toString = toString + e.episodeNumber() + " - " + e.title() + "\n";
-            }
-        }
-        return toString;
+        StringBuilder stringBuilder = new StringBuilder();
+        this.forEach(s -> stringBuilder.append(s.toString() + "\n"));
+        return stringBuilder.toString();
     }
-
 }
