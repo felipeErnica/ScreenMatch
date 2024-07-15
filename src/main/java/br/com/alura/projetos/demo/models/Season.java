@@ -7,11 +7,20 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Season(@JsonAlias("Season") Integer season,
-                     @JsonAlias("Episodes") List<Episode> episodes) {
+                     @JsonAlias("Episodes") List<EpisodeData> episodeData) {
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder().append("Season " + season + "\n");
-        episodes.forEach(e -> stringBuilder.append(e.toString() + "\n"));
+
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("Season ")
+                .append(season)
+                .append("\n");
+
+        episodeData.forEach(e -> stringBuilder
+                .append(e.toString())
+                .append("\n")
+        );
+
         return stringBuilder.toString();
     }
 }

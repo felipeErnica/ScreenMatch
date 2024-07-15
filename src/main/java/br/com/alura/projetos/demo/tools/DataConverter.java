@@ -1,9 +1,9 @@
-package br.com.alura.projetos.demo.models;
+package br.com.alura.projetos.demo.tools;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DataConverter implements IConversor{
+public class DataConverter implements IConversor {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Override
