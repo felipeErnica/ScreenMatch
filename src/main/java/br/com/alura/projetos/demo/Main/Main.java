@@ -5,9 +5,11 @@ import br.com.alura.projetos.demo.repository.SerieRepository;
 import br.com.alura.projetos.demo.tools.DataConverter;
 import br.com.alura.projetos.demo.tools.OmdbAdress;
 import br.com.alura.projetos.demo.tools.APIConsumer;
+import org.springframework.data.domain.Example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -35,7 +37,7 @@ public class Main {
             case 1 -> addSeries();
             case 2 -> listSeries();
             case 3 -> deleteSeries();
-            case 4 -> {}
+            case 4 -> System.out.println("\nAplicação encerrada!");
             default -> {
                 System.out.println("Selecione uma opção válida!\n");
                 showMenu();
@@ -57,13 +59,29 @@ public class Main {
             search = serieData.title() + "&season=" + i;
             String adress = adressGetter.getURI(search);
             json = apiConsumer.getJson(adress);
-            Season season = dataConverter.getData(json,Season.class);
-            for (EpisodeData episodeData: season.episodeData()) {
+            SeasonData seasonData = dataConverter.getData(json, SeasonData.class);
+            Season season = new Season(seasonData);
+            serie.addSeason(season);
+            for (EpisodeData episodeData : seasonData.episodeDataList()) {
                 Episode episode = new Episode(episodeData);
-                serie.addEpisode(episode);
+                season.addEpisode(episode);
             }
         }
-        serieRepository.save(serie);
+
+        Optional<Serie> optionalSerie = serieRepository.findByTitleContainingIgnoreCase(serie.getTitle());
+        if (optionalSerie.isEmpty()) {
+            serieRepository.save(serie);
+        } else {
+            Serie serieFound = optionalSerie.get();
+            serieFound.setGenre(serie.getGenre());
+            serieFound.setEpisodes(serie.getEpisodes());
+            serieFound.setYear(serie.getYear());
+            serieFound.setTitle(serie.getTitle());
+            serieFound.setRatings(serie.getRatings());
+            serieFound.setSeasons(serie.getSeasons());
+            serieFound.setTotalSeasons(serie.getTotalSeasons());
+            serieRepository.save(serieFound);
+        }
         showMenu();
     }
     private void listSeries(){

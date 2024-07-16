@@ -15,7 +15,9 @@ public class Serie {
     private Double ratings;
     private String genre;
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Episode> episodes = new ArrayList<>();
+    private List<Season> seasons = new ArrayList<Season>();
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Episode> episodes = new ArrayList<Episode>();
 
     public Serie (){}
 
@@ -27,11 +29,48 @@ public class Serie {
         this.genre = serieData.genre();
     }
 
-    public void addEpisode(Episode episode){
-        episode.setSerie(this);
-        episodes.add(episode);
+    public String getTitle() {
+        return title;
     }
-
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getYear() {return year;}
+    public void setYear(String year) {this.year = year;}
+    public int getTotalSeasons() {
+        return totalSeasons;
+    }
+    public void setTotalSeasons(int totalSeasons) {
+        this.totalSeasons = totalSeasons;
+    }
+    public Double getRatings() {
+        return ratings;
+    }
+    public void setRatings(Double ratings) {
+        this.ratings = ratings;
+    }
+    public String getGenre() {
+        return genre;
+    }
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+    public List<Season> getSeasons() {
+        return seasons;
+    }
+    public void setSeasons(List<Season> seasons) {
+        this.seasons = seasons;
+    }
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
+    }
+    public void addSeason(Season season){
+        season.setSerie(this);
+        seasons.add(season);
+    }
     @Override
     public String toString() {
         return id + " - " + title + " (" + year + ") " + "Nota: " + ratings;
