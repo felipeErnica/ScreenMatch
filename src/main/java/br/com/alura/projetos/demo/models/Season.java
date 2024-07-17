@@ -1,6 +1,8 @@
 package br.com.alura.projetos.demo.models;
 
 import jakarta.persistence.*;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Season {
     @Transient
     private Double rating;
     @ManyToOne
+    @JoinColumn(name = "serie_id")
     private Serie serie;
     @OneToMany(mappedBy = "season",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     List<Episode> episodeList = new ArrayList<Episode>();
@@ -20,6 +23,13 @@ public class Season {
     public Season(){}
     public Season(SeasonData seasonData) {
         this.seasonNumber = seasonData.seasonNumber();
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public Integer getSeasonNumber() {
         return seasonNumber;
@@ -30,12 +40,13 @@ public class Season {
     public Serie getSerie() {
         return serie;
     }
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
     public List<Episode> getEpisodeList() {
         return episodeList;
     }
-    public void setEpisodeList(List<Episode> episodeList) {
-        this.episodeList = episodeList;
-    }
+
     public double getRating(){
         if (rating==0) {
             episodeList.forEach(e -> rating=+ e.getRating());
@@ -44,19 +55,21 @@ public class Season {
         return rating;
     }
 
+    public void addEpisode (Episode episode) {
+        episode.setSeason(this);
+        episode.setSerie(serie);
+        episodeList.add(episode);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Season season = (Season) o;
+        return season.getSeasonNumber().equals(seasonNumber);
+    }
+
     @Override
     public String toString() {
         return "Temporada " + seasonNumber;
-    }
-
-    public void setSerie(Serie serie) {
-        this.serie = serie;
-    }
-
-    public void addEpisode (Episode episode) {
-        episode.setSerie(serie);
-        episode.setSeason(this);
-        episodeList.add(episode);
     }
 
 }

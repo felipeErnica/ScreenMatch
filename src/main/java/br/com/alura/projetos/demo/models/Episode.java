@@ -13,11 +13,12 @@ public class Episode {
     private LocalDate release;
     private Long episodeNumber;
     private Double rating;
-    @ManyToOne private Serie serie;
-    @ManyToOne private Season season;
+    @ManyToOne @JoinColumn(name = "serie_id")
+    private Serie serie;
+    @ManyToOne @JoinColumn(name = "season_id")
+    private Season season;
 
-    public Episode() {
-    }
+    public Episode() {}
     public Episode (EpisodeData episodeData) {
         this.title = episodeData.title();
         this.release = episodeData.release().equals("N/A") ? null : LocalDate.parse(episodeData.release(), DateTimeFormatter.ISO_LOCAL_DATE);
@@ -25,6 +26,12 @@ public class Episode {
         this.rating = episodeData.rating().equals("N/A") ? 0 : Double.parseDouble(episodeData.rating());
     }
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getTitle() {
         return title;
     }
@@ -49,14 +56,22 @@ public class Episode {
     public void setRating(Double rating) {
         this.rating = rating;
     }
-    public void setSerie(Serie serie) {
-        this.serie = serie;
-    }
     public void setSeason(Season season) {
         this.season = season;
     }
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Episode episode = (Episode) obj;
+        return episode.getTitle().equals(title) & episode.getRelease().equals(release);
+    }
+
     @Override
     public String toString() {
         return season.getSeasonNumber() + "." + episodeNumber + " - " + title;
     }
+
 }
