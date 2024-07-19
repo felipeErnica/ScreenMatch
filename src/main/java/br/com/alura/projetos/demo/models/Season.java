@@ -1,9 +1,10 @@
 package br.com.alura.projetos.demo.models;
 
 import jakarta.persistence.*;
-import org.jetbrains.annotations.NotNull;
 
+import java.text.Format;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 @Entity @Table(name = "seasons")
@@ -11,9 +12,9 @@ public class Season {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private Integer seasonNumber;
+    private int seasonNumber;
     @Transient
-    private Double rating;
+    private double rating;
     @ManyToOne
     @JoinColumn(name = "serie_id")
     private Serie serie;
@@ -25,13 +26,13 @@ public class Season {
         this.seasonNumber = seasonData.seasonNumber();
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
     public void setId(Long id) {
         this.id = id;
     }
-    public Integer getSeasonNumber() {
+    public int getSeasonNumber() {
         return seasonNumber;
     }
     public void setSeasonNumber(Integer seasonNumber) {
@@ -46,11 +47,17 @@ public class Season {
     public List<Episode> getEpisodeList() {
         return episodeList;
     }
+    public String getTitle() {
+        return null;
+    }
 
     public double getRating(){
         if (rating==0) {
-            episodeList.forEach(e -> rating=+ e.getRating());
-            rating = rating/episodeList.size();
+             rating = episodeList.stream()
+                    .filter(e->e.getRating() != 0)
+                    .mapToDouble(e -> e.getRating())
+                    .average()
+                    .getAsDouble();
         }
         return rating;
     }
@@ -61,10 +68,15 @@ public class Season {
         episodeList.add(episode);
     }
 
+    public void printSeason () {
+        System.out.println("Temporada " + seasonNumber + " - Avaliação " +  String.format("%.2f",getRating()));
+        episodeList.forEach(System.out::println);
+    }
+
     @Override
     public boolean equals(Object o) {
         Season season = (Season) o;
-        return season.getSeasonNumber().equals(seasonNumber);
+        return season.getSeasonNumber() == seasonNumber;
     }
 
     @Override

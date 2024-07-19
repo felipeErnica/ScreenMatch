@@ -1,6 +1,9 @@
 package br.com.alura.projetos.demo.models;
 
+import br.com.alura.projetos.demo.tools.GoogleIA;
 import jakarta.persistence.*;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +26,16 @@ public class Serie {
     public Serie (){}
 
     public Serie (SerieData serieData) {
-        this.title = serieData.title();
-        this.year = serieData.year();
-        this.totalSeasons = serieData.totalSeasons();
-        this.ratings = serieData.ratings().equals("N/A") ? 0 : Double.parseDouble(serieData.ratings());
-        this.genre = serieData.genre();
+        try {
+            this.title = serieData.title();
+            this.year = serieData.year();
+            this.totalSeasons = serieData.totalSeasons();
+            this.ratings = serieData.ratings().equals("N/A") ? 0 : Double.parseDouble(serieData.ratings());
+            this.genre = serieData.genre();
+            this.description = GoogleIA.translatePrompt(serieData.plot());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public Long getId() {
@@ -69,15 +77,18 @@ public class Serie {
         return episodeList;
     }
 
+
     public void addSeason(Season season){
         season.setSerie(this);
         seasons.add(season);
     }
 
     public void printSerie () {
-        System.out.println(title+"\n");
+        System.out.println(title);
         System.out.println("Anos de Atividade: " + year);
         System.out.println("Total de Temporadas: " + totalSeasons);
+        System.out.println("Sinopse: " + description);
+        seasons.forEach(System.out::println);
     }
 
     @Override

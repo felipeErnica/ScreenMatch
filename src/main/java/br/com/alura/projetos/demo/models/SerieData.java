@@ -10,5 +10,6 @@ public record SerieData(@JsonAlias("Title") String title,
                         @JsonAlias("Year") String year,
                         @JsonAlias("totalSeasons") int totalSeasons,
                         @JsonAlias("imdbRating") String ratings,
+                        @JsonAlias("Plot") String plot,
                         @JsonAlias("Genre") String genre) {
 }

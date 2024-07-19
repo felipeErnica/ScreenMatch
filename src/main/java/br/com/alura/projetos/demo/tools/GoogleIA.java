@@ -9,13 +9,13 @@ import java.io.IOException;
 public class GoogleIA {
     private static final String PROJECT_ID = "screenmatch-alura";
     private static final String LOCATION  ="us-central1";
-    private static final String MODEL = "gemini-1.5-flash-001";
+    private static final String MODEL = "gemini-1.5-pro-001";
     private static VertexAI vertexAI = new VertexAI(PROJECT_ID,LOCATION);
 
-    private static String translatePrompt(String text) throws IOException {
+    public static String translatePrompt(String text) throws IOException {
         String prompt = "Translate this text to Brazilian Portuguese: " + text;
-        GenerativeModel generativeModel = new GenerativeModel(MODEL,vertexAI);
-        GenerateContentResponse response = generativeModel.generateContent(prompt);
+        GenerativeModel model = new GenerativeModel(MODEL,vertexAI);
+        GenerateContentResponse response = model.generateContent(prompt);
         return ResponseHandler.getText(response);
     }
 

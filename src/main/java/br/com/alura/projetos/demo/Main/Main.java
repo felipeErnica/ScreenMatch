@@ -2,11 +2,11 @@ package br.com.alura.projetos.demo.Main;
 
 import br.com.alura.projetos.demo.models.*;
 import br.com.alura.projetos.demo.repository.SerieRepository;
-import br.com.alura.projetos.demo.tools.DataConverter;
-import br.com.alura.projetos.demo.tools.OmdbAdress;
-import br.com.alura.projetos.demo.tools.APIConsumer;
+import br.com.alura.projetos.demo.tools.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,13 +31,13 @@ public class Main {
         System.out.println("3 - Selecionar série");
         System.out.println("4 - Encerrar\n");
 
-        int option = new Scanner(System.in).nextInt();
+        String option = new Scanner(System.in).nextLine();
 
         switch (option) {
-            case 1 -> addSeries();
-            case 2 -> listSeries();
-            case 3 -> selectSerie();
-            case 4 -> System.out.println("\nAplicação encerrada!");
+            case "1" -> addSeries();
+            case "2" -> listSeries();
+            case "3" -> selectSerie();
+            case "4" -> System.out.println("\nAplicação encerrada!");
             default -> {
                 System.out.println("Selecione uma opção válida!\n");
                 showMenu();
@@ -102,13 +102,15 @@ public class Main {
             long id = Long.parseLong(new Scanner(System.in).nextLine());
             Optional<Serie> optionalSerie = serieRepository.findById(id);
 
+            if (optionalSerie.isPresent()) {
+                Serie serie = optionalSerie.get();
+                SerieMenu serieMenu = new SerieMenu(serie,this, serieRepository);
+                serieMenu.showMenu();
+            } else {
+                System.out.println("A série não foi encontrada!");
+            }
         } catch (Exception e){
-            System.out.println("Digite um Número");
+            System.out.println("Digite um Número!");
         }
-
-
-
-
     }
-
 }
