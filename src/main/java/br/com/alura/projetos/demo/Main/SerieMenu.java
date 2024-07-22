@@ -6,7 +6,7 @@ import br.com.alura.projetos.demo.repository.SerieRepository;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class SerieMenu {
+public class SerieMenu implements IMenu {
 
     private Main mainMenu;
     private Serie serie;
@@ -23,18 +23,23 @@ public class SerieMenu {
         showOptions();
     }
 
-    private void showOptions(){
+    public void showOptions(){
         System.out.println("\nSelecione as opções:");
         System.out.println("1 - Apagar Série");
         System.out.println("2 - Ver Temporada");
-        System.out.println("3 - Retornar");
+        System.out.println("3 - Pesquisar Episódios");
+        System.out.println("4 - Retornar");
 
         String response = new Scanner(System.in).nextLine();
 
         switch (response) {
             case "1" -> deleteSerie();
             case "2" ->showSeason();
-            case "3" -> mainMenu.showMenu();
+            case "3" -> {
+                EpisodesMenu episodesMenu = new EpisodesMenu(this,serie.getEpisodeList());
+                episodesMenu.showMenu();
+            }
+            case "4" -> mainMenu.showMenu();
             default -> {
                 System.out.println("Selecione uma opção válida!");
                 showMenu();

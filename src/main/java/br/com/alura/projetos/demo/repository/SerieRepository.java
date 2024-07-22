@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SerieRepository extends JpaRepository <Serie,Long> {
-    Optional<Serie> findByTitleContainingIgnoreCase(String title);
-    List<Serie> findByTotalSeasonsAndRatingsGreaterThan(int totalSeasons, double ratings);
+    Optional<Serie> findByTitleIgnoreCase(String search);
+    List<Serie> findByTitleContainingIgnoreCaseOrderByRatingsDesc(String search);
+    List<Serie> findByOrderByRatingsDesc();
+    List<Serie> findTop3ByOrderByRatings();
+    List<Serie> findByTotalSeasonsLessThanEqualAndRatingsGreaterThanEqualOrderByRatingsDesc(int totalSeasons, double ratings);
 }

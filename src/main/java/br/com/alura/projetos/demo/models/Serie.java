@@ -11,11 +11,11 @@ import java.util.List;
 public class Serie {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
     private String title;
     private String year;
     private int totalSeasons;
-    private Double ratings;
+    private double ratings;
     private String genre;
     private String description;
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -38,7 +38,7 @@ public class Serie {
         }
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
     public void setId(Long id) {
@@ -58,7 +58,7 @@ public class Serie {
     public void setTotalSeasons(int totalSeasons) {
         this.totalSeasons = totalSeasons;
     }
-    public Double getRatings() {
+    public double getRatings() {
         return ratings;
     }
     public void setRatings(Double ratings) {

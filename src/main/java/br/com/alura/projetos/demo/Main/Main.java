@@ -2,11 +2,10 @@ package br.com.alura.projetos.demo.Main;
 
 import br.com.alura.projetos.demo.models.*;
 import br.com.alura.projetos.demo.repository.SerieRepository;
-import br.com.alura.projetos.demo.tools.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import br.com.alura.projetos.demo.tools.APIConsumer;
+import br.com.alura.projetos.demo.tools.DataConverter;
+import br.com.alura.projetos.demo.tools.OmdbAdress;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +27,18 @@ public class Main {
         System.out.println("Selecione uma opção:\n");
         System.out.println("1 - Buscar uma série online");
         System.out.println("2 - Listar séries salvas");
-        System.out.println("3 - Selecionar série");
-        System.out.println("4 - Encerrar\n");
+        System.out.println("3 - Pesquisar série");
+        System.out.println("4 - Selecionar série");
+        System.out.println("5 - Encerrar\n");
 
         String option = new Scanner(System.in).nextLine();
 
         switch (option) {
             case "1" -> addSeries();
             case "2" -> listSeries();
-            case "3" -> selectSerie();
-            case "4" -> System.out.println("\nAplicação encerrada!");
+            case "3" -> searchSerie();
+            case "4" -> selectSerie();
+            case "5" -> System.out.println("\nAplicação encerrada!");
             default -> {
                 System.out.println("Selecione uma opção válida!\n");
                 showMenu();
@@ -68,8 +69,9 @@ public class Main {
             }
         }
 
-        Optional<Serie> optionalSerie = serieRepository.findByTitleContainingIgnoreCase(serie.getTitle());
+        Optional<Serie> optionalSerie = serieRepository.findByTitleIgnoreCase(serie.getTitle());
         optionalSerie.ifPresent(s -> editSeries(serie,s));
+
         serieRepository.save(serie);
         showMenu();
     }
@@ -96,21 +98,79 @@ public class Main {
         showMenu();
     }
 
-    private void selectSerie() {
-        System.out.println("Insira o Id:");
+    private void selectSerie(){
+        System.out.println("Digite o Id:");
         try {
-            long id = Long.parseLong(new Scanner(System.in).nextLine());
+            long id = new Scanner(System.in).nextLong();
             Optional<Serie> optionalSerie = serieRepository.findById(id);
-
             if (optionalSerie.isPresent()) {
                 Serie serie = optionalSerie.get();
-                SerieMenu serieMenu = new SerieMenu(serie,this, serieRepository);
+                SerieMenu serieMenu = new SerieMenu(serie,this,serieRepository);
                 serieMenu.showMenu();
             } else {
-                System.out.println("A série não foi encontrada!");
+                System.out.println("Digite um Id válido!");
+                showMenu();
             }
-        } catch (Exception e){
-            System.out.println("Digite um Número!");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
+
+    private void searchSerie() {
+        System.out.println("Selecione uma opção:");
+        System.out.println("1- Pequisar por Nome");
+        System.out.println("2- Ordenar por Avaliação");
+        System.out.println("3- As Melhores Avaliadas");
+        System.out.println("4- As Melhores para Maratonar");
+        System.out.println("5- Retornar");
+
+        String option = new Scanner(System.in).nextLine();
+        switch (option) {
+            case "1","2","3","4" -> returnList(option);
+            case "5" -> showMenu();
+            default -> {
+                System.out.println("Selecione uma opção válida!");
+                selectSerie();
+            }
+        }
+    }
+
+    private void returnList (String option){
+        List<Serie> seriesFound = new ArrayList<Serie>();
+        switch (option) {
+            case "1" -> {
+                System.out.println("Digite um trecho do título:");
+                String search =new Scanner(System.in).nextLine();
+                seriesFound = serieRepository.findByTitleContainingIgnoreCaseOrderByRatingsDesc(search);
+            }
+            case "2" -> seriesFound = serieRepository.findByOrderByRatingsDesc();
+            case "3" -> seriesFound = serieRepository.findTop3ByOrderByRatings();
+            case "4" -> {
+                seriesFound = serieRepository
+                    .findByTotalSeasonsLessThanEqualAndRatingsGreaterThanEqualOrderByRatingsDesc(4, 8);
+            }
+        }
+
+        seriesFound.forEach(System.out::println);
+        searchOptions();
+    }
+
+    private void searchOptions(){
+        System.out.println("Selecione uma opção:");
+        System.out.println("1- Selecionar Série");
+        System.out.println("2- Retornar");
+
+        String option = new Scanner(System.in).nextLine();
+
+        switch (option) {
+            case "1" -> selectSerie();
+            case "2" -> searchSerie();
+            default -> {
+                System.out.println("Selecione uma opção válida!");
+                searchOptions();
+            }
+        }
+    }
+
 }
