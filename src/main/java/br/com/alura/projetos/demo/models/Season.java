@@ -1,10 +1,7 @@
 package br.com.alura.projetos.demo.models;
 
 import jakarta.persistence.*;
-
-import java.text.Format;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 @Entity @Table(name = "seasons")

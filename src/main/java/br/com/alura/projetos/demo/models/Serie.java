@@ -1,5 +1,6 @@
 package br.com.alura.projetos.demo.models;
 
+import br.com.alura.projetos.demo.dto.SerieDTO;
 import br.com.alura.projetos.demo.tools.GoogleIA;
 import jakarta.persistence.*;
 
@@ -18,9 +19,9 @@ public class Serie {
     private double ratings;
     private String genre;
     private String description;
-    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Season> seasons = new ArrayList<Season>();
-    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private  List<Episode> episodeList = new ArrayList<Episode>();
 
     public Serie (){}
@@ -46,6 +47,9 @@ public class Serie {
     }
     public String getTitle() {
         return title;
+    }
+    public String getDescription() {
+        return description;
     }
     public void setTitle(String title) {
         this.title = title;

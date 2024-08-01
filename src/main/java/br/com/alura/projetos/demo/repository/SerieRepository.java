@@ -18,10 +18,13 @@ public interface SerieRepository extends JpaRepository <Serie,Long> {
     @Query("SELECT s FROM Serie s ORDER BY s.ratings DESC")
     List<Serie> orderByRating();
 
-    @Query("SELECT s FROM Serie s ORDER BY s.ratings DESC LIMIT 3")
-    List<Serie> getBest3Series();
+    @Query("SELECT s FROM Serie s ORDER BY s.ratings DESC LIMIT 5")
+    List<Serie> getBest5Series();
 
-    @Query("SELECT s FROM Serie s WHERE s.totalSeasons >= :totalSeason AND s.ratings >= :ratings ORDER BY s.ratings DESC")
+    @Query("SELECT s FROM Serie s WHERE s.totalSeasons >= :totalSeasons AND s.ratings >= :ratings ORDER BY s.ratings DESC")
     List<Serie> getSeriesBySeasonsAndRating(int totalSeasons, double ratings);
+
+    @Query("SELECT s FROM Serie s ORDER BY s.year DESC")
+    List<Serie> getNewSeries ();
 
 }
